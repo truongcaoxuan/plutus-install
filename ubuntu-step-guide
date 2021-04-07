@@ -1,0 +1,32 @@
+==========================
+****OS Ubuntu****
+==========================
+
+# STEP ONE: INSTALL NIX
+
+curl -L https://nixos.org/nix/install | sh
+mkdir /etc/nix
+
+# COPY FOLLOWING TWO LINES:
+
+substituters        = https://hydra.iohk.io https://iohk.cachix.org https://cache.nixos.org/
+trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= iohk.cachix.org-1:DpRUyj7h7V830dp/i6Nti+NEO2/nhblbov/8MW7Rqoo= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+
+# PASTE IN HERE:
+
+sudo vi /etc/nix/nix.conf
+
+# STEP TWO: INSTALL HASKELL
+
+sudo add-apt-repository universe
+sudo add-apt-repository multiverse
+sudo apt update
+sudo apt upgrade
+sudo apt-get install haskell-platform
+cabal update
+
+# STEP THREE: INSTALL PLUTUS
+
+git clone https://github.com/input-output-hk/plutus.git
+cd plutus/
+nix build -f default.nix plutus.haskell.packages.plutus-core.components.library
