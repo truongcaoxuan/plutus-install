@@ -1,6 +1,6 @@
-==========================
-****OS Ubuntu****
-==========================
+==============================
+****truongcx/plutus images****
+==============================
 FROM debian:latest
 LABEL maintainer="VNPIPS Staking Team (ada.vnpips.com)"
 
