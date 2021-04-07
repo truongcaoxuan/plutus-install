@@ -14,18 +14,20 @@
 
     curl -L https://nixos.org/nix/install | sh
 
-6. Configure nix by adding the file /etc/nix/nix.conf (relaunch your shell)
+6. Configure nix by adding the file /etc/nix/nix.conf
 
     sandbox = false
     use-sqlite-wal = false
     substituters        = https://hydra.iohk.io https://iohk.cachix.org https://cache.nixos.org/
     trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= iohk.cachix.org-1:DpRUyj7h7V830dp/i6Nti+NEO2/nhblbov/8MW7Rqoo= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=kkj
 
+    //--> need to relaunch your shell for changes apply. 
 7. Build Plutus with the Nix command line in the README file
 
    nix build -f default.nix plutus.haskell.packages.plutus-core.components.library
 
-8. Install Docker for Windows (relaunch your shell)
+8. Install Docker for Windows
+   //--> need to relaunch your shell for changes apply.
 9. Launch Docker and make sure it is WSL2 enabled (in the settings)
 
 10. Launch the Docker container from WSL using the README command line
@@ -50,5 +52,5 @@ https://code.visualstudio.com/docs/remote/wsl#_advanced-opening-a-wsl-2-folder-i
 9. 'cabal update' then 'cabal build' and watch it build the Haskell
 
 NOTE:
--- About step 1,2 check also this references link https://ubuntu.com/wsl
+-- About step 1,2 check also this references link https://ubuntu.com/wsl | https://docs.microsoft.com/en-us/windows/wsl/
 -- About step 8,9 check also this references link https://docs.docker.com/docker-for-windows/install/
