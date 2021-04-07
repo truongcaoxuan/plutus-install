@@ -86,18 +86,31 @@ RUN CBVERSION=$(cat cabal-version.txt) \
   && wget https://downloads.haskell.org/~cabal/cabal-install-$CBVERSION/cabal-install-$CBVERSION-x86_64-unknown-linux.tar.xz \
   && tar -xf cabal-install-$CBVERSION-x86_64-unknown-linux.tar.xz \
   && rm cabal-install-$CBVERSION-x86_64-unknown-linux.tar.xz cabal.sig \
-# && mv cabal ~/.cabal/bin/ \
-  && mv cabal /usr/local/bin/ \
-  && /usr/local/bin/cabal update \
-  && /usr/local/bin/cabal --version \
+  && mv cabal ~/.cabal/bin/ \
+# && mv cabal /usr/local/bin/ \
+  && ~/.cabal/bin/cabal update \
+  && ~/.cabal/bin/cabal --version \
   && cd ..
   
 # STEP ONE: INSTALL NIX
-RUN curl -L https://nixos.org/nix/install | sh
- && mkdir /etc/nix
+# RUN curl -L https://nixos.org/nix/install | sh
+
+# INSTALL NIX
+RUN sudo curl -sL https://nixos.org/nix/install | sh \
+    && sudo ln -s /nix/var/nix/profiles/per-user/etc/profile.d/nix.sh /etc/profile.d/ \
+    && . /home/$NONEROOTUSER/.nix-profile/etc/profile.d/nix.sh \
+    && echo "export PATH=/nix/var/nix/profiles/per-user/$NONEROOTUSER/profile/bin:/nix/var/nix/profiles/per-user/$NONEROOTUSER/profile/sbin:/opt/cardano/cnode/scripts:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/home/$NONEROOTUSER/.cabal/bin"  >> ~/.bashrc
+
+# INSTALL DEPS  
+RUN /nix/var/nix/profiles/per-user/$NONEROOTUSER/profile/bin/nix-env -i python3 systemd libsodium tmux jq ncurses libtool autoconf git wget gnupg column less openssl vim \
+    && /nix/var/nix/profiles/per-user/$NONEROOTUSER/profile/bin/nix-channel --update \
+    && /nix/var/nix/profiles/per-user/$NONEROOTUSER/profile/bin/nix-env -u --always \
+    && /nix/var/nix/profiles/per-user/$NONEROOTUSER/profile/bin/nix-collect-garbage -d \
+    && sudo rm /nix/var/nix/profiles/per-user/$NONEROOTUSER/profile/bin/nix-*
 
 # COPY FOLLOWING TWO LINES:
-RUN echo "substituters        = https://hydra.iohk.io https://iohk.cachix.org https://cache.nixos.org/" >> /etc/nix/nix.conf \
+RUN mkdir /etc/nix \ 
+ && echo "substituters        = https://hydra.iohk.io https://iohk.cachix.org https://cache.nixos.org/" >> /etc/nix/nix.conf \
  && echo "trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= iohk.cachix.org-1:DpRUyj7h7V830dp/i6Nti+NEO2/nhblbov/8MW7Rqoo= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" >> /etc/nix/nix.conf
 
 # STEP TWO: INSTALL HASKELL
@@ -110,5 +123,14 @@ RUN sudo apt-get install haskell-platform \
 RUN git clone https://github.com/input-output-hk/plutus.git \
  && cd plutus/ \
  && nix build -f default.nix plutus.haskell.packages.plutus-core.components.library
- 
-ENTRYPOINT ["/bin/bash"]
+
+# ADD SCRIPT
+ADD addfile/banner.txt /home/$NONEROOTUSER/.scripts/
+ADD addfile/downG.sh /home/$NONEROOTUSER/.scripts/
+ADD addfile/entrypoint.sh ./
+
+RUN sudo chown -R $NONEROOTUSER:$NONEROOTUSER $CNODE_HOME/* \
+    && sudo chown -R $NONEROOTUSER:$NONEROOTUSER /home/$NONEROOTUSER/.* \
+    && sudo chmod a+x /home/$NONEROOTUSER/.scripts/*.sh /home/$NONEROOTUSER/entrypoint.sh
+    
+ENTRYPOINT ["./entrypoint.sh"]
