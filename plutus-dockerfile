@@ -19,7 +19,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Switch to root user : to run privileged command
 # --- Usually you won't be needed it - Depends on base image
 USER root
-#WORKDIR /
+WORKDIR /
 
 # Update and install the required packages
 RUN apt-get update -y \
