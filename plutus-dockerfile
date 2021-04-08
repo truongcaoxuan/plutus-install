@@ -122,8 +122,7 @@ ADD addfile/banner.txt /home/$NONEROOTUSER/.scripts/
 ADD addfile/downG.sh /home/$NONEROOTUSER/.scripts/
 ADD addfile/entrypoint.sh /home/$NONEROOTUSER/
 
-RUN sudo chown -R $NONEROOTUSER:$NONEROOTUSER $CNODE_HOME/* \
-    && sudo chown -R $NONEROOTUSER:$NONEROOTUSER /home/$NONEROOTUSER/.* \
+RUN sudo chown -R $NONEROOTUSER:$NONEROOTUSER /home/$NONEROOTUSER/.* \
     && sudo chmod a+x /home/$NONEROOTUSER/.scripts/*.sh /home/$NONEROOTUSER/entrypoint.sh
     
 ENTRYPOINT ["./entrypoint.sh"]
