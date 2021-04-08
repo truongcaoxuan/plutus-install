@@ -70,12 +70,12 @@ RUN CBVERSION=$(cat cabal-version.txt) \
   
 # SETUP NONEROOTUSER
 ARG NONEROOTUSER=vnpip
-RUN sudo mkdir /etc/nix
+RUN sudo mkdir -m 0755 /nix && sudo mkdir /etc/nix
 RUN adduser --disabled-password --gecos '' $NONEROOTUSER \
     && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
     && adduser $NONEROOTUSER sudo \
     && chown -R $NONEROOTUSER:$NONEROOTUSER /home/$NONEROOTUSER/.* \
-    && chown -R $NONEROOTUSER:$NONEROOTUSER /etc/nix
+    && chown -R $NONEROOTUSER:$NONEROOTUSER /nix /etc/nix
 
 # Run non-privileged command
 USER $NONEROOTUSER
