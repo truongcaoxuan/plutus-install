@@ -85,13 +85,10 @@ USER $NONEROOTUSER
 #WORKDIR /home/$NONEROOTUSER
   
 # STEP ONE: INSTALL NIX
-# RUN curl -L https://nixos.org/nix/install | sh
-
-# INSTALL NIX
 RUN sudo curl -sL https://nixos.org/nix/install | sh \
     && sudo ln -s /nix/var/nix/profiles/per-user/etc/profile.d/nix.sh /etc/profile.d/ \
     && . /home/$NONEROOTUSER/.nix-profile/etc/profile.d/nix.sh \
-    && echo "export PATH=/nix/var/nix/profiles/per-user/$NONEROOTUSER/profile/bin:/nix/var/nix/profiles/per-user/$NONEROOTUSER/profile/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/bin:/sbin:/home/$NONEROOTUSER/.cabal/bin"  >> ~/.bashrc 
+    && echo "export PATH=/nix/var/nix/profiles/per-user/$NONEROOTUSER/profile/bin:/nix/var/nix/profiles/per-user/$NONEROOTUSER/profile/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin:/home/$NONEROOTUSER/.cabal/bin"  >> ~/.bashrc 
 
 
 # INSTALL DEPS  
