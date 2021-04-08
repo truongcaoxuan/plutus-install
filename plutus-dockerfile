@@ -1,6 +1,6 @@
-==============================
-****truongcx/plutus images****
-==============================
+#==============================
+#****truongcx/plutus images****
+#==============================
 FROM ubuntu:20.04 AS build
 
 LABEL maintainer="VNPIPS Staking Team (ada.vnpips.com)"
