@@ -75,7 +75,7 @@ RUN adduser --disabled-password --gecos '' $NONEROOTUSER \
     && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
     && adduser $NONEROOTUSER sudo \
     && chown -R $NONEROOTUSER:$NONEROOTUSER /home/$NONEROOTUSER/.* \
-    && chown -R $NONEROOTUSER:$NONEROOTUSER /nix /etc/nix
+    && chown -R $NONEROOTUSER:$NONEROOTUSER /etc/nix
 
 # Run non-privileged command
 USER $NONEROOTUSER
@@ -88,7 +88,8 @@ USER $NONEROOTUSER
 RUN sudo curl -sL https://nixos.org/nix/install | sh \
     && sudo ln -s /nix/var/nix/profiles/per-user/etc/profile.d/nix.sh /etc/profile.d/ \
     && . /home/$NONEROOTUSER/.nix-profile/etc/profile.d/nix.sh \
-    && echo "export PATH=/nix/var/nix/profiles/per-user/$NONEROOTUSER/profile/bin:/nix/var/nix/profiles/per-user/$NONEROOTUSER/profile/sbin:/opt/cardano/cnode/scripts:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/home/$NONEROOTUSER/.cabal/bin"  >> ~/.bashrc
+    && echo "export PATH=/nix/var/nix/profiles/per-user/$NONEROOTUSER/profile/bin:/nix/var/nix/profiles/per-user/$NONEROOTUSER/profile/sbin:/opt/cardano/cnode/scripts:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/home/$NONEROOTUSER/.cabal/bin"  >> ~/.bashrc \
+    && && chown -R $NONEROOTUSER:$NONEROOTUSER /nix
 
 # INSTALL DEPS  
 RUN /nix/var/nix/profiles/per-user/$NONEROOTUSER/profile/bin/nix-env -i python3 systemd libsodium tmux jq ncurses libtool autoconf git wget gnupg column less openssl vim \
@@ -106,9 +107,12 @@ RUN sudo apt-get install -y haskell-platform \
   && cabal update
 
 # STEP THREE: INSTALL PLUTUS
-RUN git clone https://github.com/input-output-hk/plutus.git \
+RUN cd ~/ \
+ && mkdir git && chmod 777 git \
+ && cd git \
+ && git clone https://github.com/input-output-hk/plutus.git \
  && cd plutus/ \
- && nix build -f default.nix plutus.haskell.packages.plutus-core.components.library
+ && home/$NONEROOTUSER/profile/bin/nix build -f default.nix plutus.haskell.packages.plutus-core.components.library
 
 # ADD SCRIPT
 ADD addfile/banner.txt /home/$NONEROOTUSER/.scripts/
