@@ -12,11 +12,7 @@ ENV \
 #   LANG=en_US.UTF-8 \
 #   LANGUAGE=en_US.UTF-8  \
     TZ=Asia/Ho_Chi_Minh
-
-#  en_US.UTF-8 for inclusion in generation
-
-
-
+    
 # Configure tzdata
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
@@ -26,7 +22,7 @@ USER root
 #WORKDIR /
 
 # Update and install the required packages
-RUN apt-get update -y\
+RUN apt-get update -y \
   && apt-get upgrade -y \
   && apt-get install -y \
      automake autoconf build-essential pkg-config \
@@ -110,13 +106,11 @@ RUN sudo apt-get install -y haskell-platform \
   && cabal update
 
 # STEP THREE: INSTALL PLUTUS
-
 RUN git clone https://github.com/input-output-hk/plutus.git \
  && cd plutus/ \
  && nix build -f default.nix plutus.haskell.packages.plutus-core.components.library
 
 # ADD SCRIPT
-
 ADD addfile/banner.txt /home/$NONEROOTUSER/.scripts/
 ADD addfile/downG.sh /home/$NONEROOTUSER/.scripts/
 ADD addfile/entrypoint.sh /home/$NONEROOTUSER/
