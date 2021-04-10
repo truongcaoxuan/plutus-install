@@ -2,20 +2,20 @@
 
 **Build**
 
-docker build --force-rm -t truongcx/plutus -f plutus-dockerfile .
+docker build --force-rm -t vnpip/plutus -f plutus-dockerfile .
 
 **Pull**
 
-docker pull truongcx/plutus
+docker pull vnpip/plutus
 
 **Push**
 
-docker push truongcx/plutus
+docker push vnpip/plutus
 
 **Testing**
 
-docker run -ti --privileged --rm  --name plutus1 truongcx/plutus
+docker run -ti --privileged --rm  --name plutus1 vnpip/plutus
 
 **Running**
 
-docker run -dti --privileged  --name plutus1 truongcx/plutus
+docker run -dti --privileged  --name plutus1 vnpip/plutus
