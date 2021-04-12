@@ -1,8 +1,13 @@
 # plutus-install
 
-**Build**
+**Build plutus**
 
 docker build --force-rm -t vnpip/plutus -f dockerfile-plutus .
+
+**Build plutus-pioneer-program**
+
+docker build --force-rm -t vnpip/plutus-pp -f dockerfile-plutus-pioneer-program .
+
 
 **Pull**
 
