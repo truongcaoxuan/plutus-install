@@ -1,4 +1,4 @@
-FROM ubuntu:20.04 AS build
+FROM vnpip/plutus AS build
 LABEL maintainer="VNPIPS Staking Team (ada.vnpips.com)"
 
 #ARG DEBIAN_FRONTEND=noninteractive
