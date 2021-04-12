@@ -21,14 +21,14 @@ RUN cd /home/vnpip/git \
    && cabal build
 
 # Run Nix shell
-RUN cd /home/vnpip/git/plutus \
-   && /nix/var/nix/profiles/per-user/vnpip/profile/bin/nix-shell
+# RUN cd /home/vnpip/git/plutus \
+# && /nix/var/nix/profiles/per-user/vnpip/profile/bin/nix-shell
 
 # Run plutus playground   
-RUN cd /home/vnpip/git/plutus/plutus-playground-client \
-   && plutus-playground-server
+# RUN cd /home/vnpip/git/plutus/plutus-playground-client \
+#   && plutus-playground-server
 # npm run start
 
 EXPOSE 8009 8080
 
-ENTRYPOINT ["/bin/bash","npm run start"]
+ENTRYPOINT ["./entrypoint.sh"]
