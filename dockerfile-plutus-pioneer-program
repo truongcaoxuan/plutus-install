@@ -21,8 +21,8 @@ RUN cd /home/vnpip/git \
    && cabal build
 
 # Run Nix shell
-# RUN cd /home/vnpip/git/plutus \
-# && /nix/var/nix/profiles/per-user/vnpip/profile/bin/nix-shell
+ RUN cd /home/vnpip/git/plutus \
+ && /nix/var/nix/profiles/per-user/vnpip/profile/bin/nix-shell
 
 # Run plutus playground   
 # RUN cd /home/vnpip/git/plutus/plutus-playground-client \
@@ -31,4 +31,4 @@ RUN cd /home/vnpip/git \
 
 EXPOSE 8009 8080
 
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["/home/vnpip/entrypoint.sh"]
