@@ -1,0 +1,32 @@
+FROM ubuntu:20.04 AS build
+LABEL maintainer="VNPIPS Staking Team (ada.vnpips.com)"
+
+#ARG DEBIAN_FRONTEND=noninteractive
+ENV \
+    ENV=/etc/profile \
+#   LC_ALL=en_US.UTF-8 \
+#   LANG=en_US.UTF-8 \
+#   LANGUAGE=en_US.UTF-8  \
+    TZ=Asia/Ho_Chi_Minh
+    
+# Configure tzdata
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Install Plutus Pioneer Program
+RUN cd /home/vnpip/git \
+   && git clone https://github.com/input-output-hk/plutus-pioneer-program.git \
+   && cd plutus-pioneer-program/code/week01 \
+   && cabal build
+
+# Run Nix shell
+RUN cd cd /home/vnpip/git/plutus \
+   && nix-shell
+
+# Run plutus playground   
+RUN cd /home/vnpip/git/plutus/plutus-playground-client \
+   && plutus-playground-server
+# npm run start
+
+EXPOSE 8009 8080
+
+ENTRYPOINT ["/bin/bash","npm run start"]
