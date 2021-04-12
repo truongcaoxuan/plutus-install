@@ -12,8 +12,10 @@ head -n 15 ~/.scripts/banner.txt
 #ghci
 
 # run plutus playground
-cd home/vnpip/git/plutus/plutus-playground-client \
-&& /usr/bin/nohup plutus-playground-server > /dev/null 2>&1 & \
-&& /usr/bin/nohup npm run start > /dev/null 2>&1 &
+cd /home/vnpip/git/plutus \
+  && /nix/var/nix/profiles/per-user/vnpip/profile/bin/nix-shell \
+  && cd home/vnpip/git/plutus/plutus-playground-client \
+  && /usr/bin/nohup plutus-playground-server > /dev/null 2>&1 & \
+  && /usr/bin/nohup npm run start > /dev/null 2>&1 &
 
 /bin/bash
