@@ -1,5 +1,5 @@
 #==============================
-#****truongcx/plutus images****
+#****vnpip/plutus images****
 #==============================
 FROM ubuntu:20.04 AS build
 
