@@ -2,7 +2,7 @@
 
 **Build**
 
-docker build --force-rm -t vnpip/plutus -f plutus-dockerfile .
+docker build --force-rm -t vnpip/plutus -f dockerfile-plutus .
 
 **Pull**
 
