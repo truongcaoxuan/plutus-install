@@ -5,6 +5,7 @@
 # STEP ONE: INSTALL NIX
 
 curl -L https://nixos.org/nix/install | sh
+source ~/.nix-profile/etc/profile.d/nix.sh
 mkdir /etc/nix
 
 # COPY FOLLOWING TWO LINES:
@@ -30,3 +31,5 @@ cabal update
 git clone https://github.com/input-output-hk/plutus.git
 cd plutus/
 nix build -f default.nix plutus.haskell.packages.plutus-core.components.library
+nix build -f default.nix plutus.haskell.packages.plutus-core.components.library --extra-experimental-features nix-command
+
