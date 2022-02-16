@@ -93,12 +93,14 @@ nix build -f default.nix plutus-apps.haskell.packages.plutus-pab.components.libr
 #==================================================================
 git clone https://github.com/input-output-hk/plutus-pioneer-program.git
 
+# Build the week01 project (make sure you are in the nix-shell)
 cd plutus 
 nix-shell
 
 cd plutus-pioneer-program/code/week01
 cabal build
 
+# CD into your PLUTUS CORE installation directory
 # In the first terminal
 # Start the plutus playground server
 cd plutus-playground-server
