@@ -89,6 +89,7 @@ git clone https://github.com/input-output-hk/plutus-apps.git
 nix build -f default.nix plutus-apps.haskell.packages.plutus-pab.components.library --extra-experimental-features nix-command
 
 # PLUTUS PIONEER PROGRAM
+# https://github.com/lsmor/plutus-pioneer-program/blob/master/installation/instructions.md
 #==================================================================
 git clone https://github.com/input-output-hk/plutus-pioneer-program.git
 
