@@ -2,21 +2,42 @@
 ****OS Ubuntu****
 https://docs.plutus-community.com/docs/setup/Ubuntu.html
 ==========================
+# PRERE
+sudo apt update -y
+sudo apt upgrade -y
+sudo apt install curl git openssh-server nano rsync zip unzip wget jq net-tools make g++ tmux git
+sudo apt-get install automake pkg-config libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev libncursesw5 libtool autoconf -y
+sudo apt-get install build-essential curl libffi-dev libffi7 libgmp-dev libgmp10 libncurses-dev libncurses5 libtinfo5 -y
+
+#Downloading and installing the GHC compiler, Cabal.
+#The easiest way to do this is to use ghcup.
+curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
+
+ghcup install ghc 8.10.7
+ghcup install cabal 3.6.2.0
+ghcup set ghc 8.10.7
+ghcup set cabal 3.6.2.0
 
 # STEP ONE: INSTALL NIX
-
 curl -L https://nixos.org/nix/install | sh
+sh <(curl -L https://nixos.org/nix/install) --daemon
+
+# When it's done we need to set the environment in this shell (also logout/login will achieve this)
 source ~/.nix-profile/etc/profile.d/nix.sh
-mkdir /etc/nix
 
-# COPY FOLLOWING TWO LINES:
+#add IOG's caches to Nix to speed up our development significantly by using their build artifacts
+sudo sh -c "echo 'substituters = https://hydra.iohk.io https://iohk.cachix.org https://cache.nixos.org/' >> /etc/nix/nix.conf"
+sudo sh -c "echo 'trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= iohk.cachix.org-1:DpRUyj7h7V830dp/i6Nti+NEO2/nhblbov/8MW7Rqoo= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=' >> /etc/nix/nix.conf"
 
-substituters        = https://hydra.iohk.io https://iohk.cachix.org https://cache.nixos.org/
-trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= iohk.cachix.org-1:DpRUyj7h7V830dp/i6Nti+NEO2/nhblbov/8MW7Rqoo= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+cat /etc/nix/nix.conf
 
-# PASTE IN HERE:
+sudo systemctl restart nix-daemon.service
 
-sudo vi /etc/nix/nix.conf
+#[Option]add your shell account to the Nix trusted users in order to apply the Nix trusted public keys for your builds
+sudo sh -c 'echo "trusted-users = $0" >> /etc/nix/nix.conf' `whoami`
+sudo systemctl restart nix-daemon.service
+
+nix-env --version
 
 # STEP TWO: INSTALL HASKELL
 
@@ -31,6 +52,7 @@ cabal update
 
 git clone https://github.com/input-output-hk/plutus.git
 cd plutus/
+git checkout e2cd641501d13715120329092b3a93df35493a44
 nix build -f default.nix plutus.haskell.packages.plutus-core.components.library
 nix build -f default.nix plutus.haskell.packages.plutus-core.components.library --extra-experimental-features nix-command
 nix build -f default.nix plutus.haskell.packages.plutus-core --extra-experimental-features nix-command
