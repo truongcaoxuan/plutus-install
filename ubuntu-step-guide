@@ -1,16 +1,18 @@
-==========================
-****OS Ubuntu****
-https://docs.plutus-community.com/docs/setup/Ubuntu.html
-==========================
+#==========================
+# **** OS Ubuntu ****
+# https://docs.plutus-community.com/docs/setup/Ubuntu.html
+#==========================
+
 # PRERE
+#==================================================================
 sudo apt update -y
 sudo apt upgrade -y
 sudo apt install curl git openssh-server nano rsync zip unzip wget jq net-tools make g++ tmux git
 sudo apt-get install automake pkg-config libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev libncursesw5 libtool autoconf -y
 sudo apt-get install build-essential curl libffi-dev libffi7 libgmp-dev libgmp10 libncurses-dev libncurses5 libtinfo5 -y
 
-#Downloading and installing the GHC compiler, Cabal.
-#The easiest way to do this is to use ghcup.
+# Downloading and installing the GHC compiler, Cabal.
+# The easiest way to do this is to use ghcup.
 curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 
 ghcup install ghc 8.10.7
@@ -18,14 +20,15 @@ ghcup install cabal 3.6.2.0
 ghcup set ghc 8.10.7
 ghcup set cabal 3.6.2.0
 
-# STEP ONE: INSTALL NIX
+# INSTALL NIX
+#==================================================================
 curl -L https://nixos.org/nix/install | sh
 sh <(curl -L https://nixos.org/nix/install) --daemon
 
 # When it's done we need to set the environment in this shell (also logout/login will achieve this)
 source ~/.nix-profile/etc/profile.d/nix.sh
 
-#add IOG's caches to Nix to speed up our development significantly by using their build artifacts
+# add IOG's caches to Nix to speed up our development significantly by using their build artifacts
 sudo sh -c "echo 'substituters = https://hydra.iohk.io https://iohk.cachix.org https://cache.nixos.org/' >> /etc/nix/nix.conf"
 sudo sh -c "echo 'trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= iohk.cachix.org-1:DpRUyj7h7V830dp/i6Nti+NEO2/nhblbov/8MW7Rqoo= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=' >> /etc/nix/nix.conf"
 
@@ -33,14 +36,14 @@ cat /etc/nix/nix.conf
 
 sudo systemctl restart nix-daemon.service
 
-#[Option]add your shell account to the Nix trusted users in order to apply the Nix trusted public keys for your builds
+# [Option]add your shell account to the Nix trusted users in order to apply the Nix trusted public keys for your builds
 sudo sh -c 'echo "trusted-users = $0" >> /etc/nix/nix.conf' `whoami`
 sudo systemctl restart nix-daemon.service
 
 nix-env --version
 
-# STEP TWO: INSTALL HASKELL
-
+# INSTALL HASKELL
+#==================================================================
 sudo add-apt-repository universe
 sudo add-apt-repository multiverse
 sudo apt update
@@ -48,13 +51,63 @@ sudo apt upgrade
 sudo apt-get install haskell-platform
 cabal update
 
-# STEP THREE: INSTALL PLUTUS
-
+# PLUTUS CORE
+#==================================================================
+#Build the Plutus Playground server and client and start it
 git clone https://github.com/input-output-hk/plutus.git
 cd plutus/
 git checkout e2cd641501d13715120329092b3a93df35493a44
-nix build -f default.nix plutus.haskell.packages.plutus-core.components.library
-nix build -f default.nix plutus.haskell.packages.plutus-core.components.library --extra-experimental-features nix-command
-nix build -f default.nix plutus.haskell.packages.plutus-core --extra-experimental-features nix-command
 
+nix build -f default.nix plutus.haskell.packages.plutus-core --extra-experimental-features nix-command
+nix build -f default.nix plutus.haskell.packages.plutus-core.components.library --extra-experimental-features nix-command
+
+nix-build -A plutus-playground.client
+nix-build -A plutus-playground.server
+nix-build -A plutus-playground.generate-purescript
+nix-build -A plutus-playground.start-backend
+nix-build -A plutus-pab
+
+#In terminal window 1
+cd plutus
+nix-shell
+cd plutus-playground-server
+plutus-playground-server
+#If it's successful, you should see Interpreter ready
+
+#In terminal window 2
+cd plutus
+nix-shell
+cd plutus-playground-client
+npm run start
+#If it's successful, you should see [wdm]: Compiled successfully.
+
+#You should now be able to navigate to https://localhost:8009. 
+#The browser will complain about it being a risky website, allow it.
+
+# PLUTUS APPS
+#==================================================================
+git clone https://github.com/input-output-hk/plutus-apps.git
+nix build -f default.nix plutus-apps.haskell.packages.plutus-pab.components.library --extra-experimental-features nix-command
+
+# PLUTUS PIONEER PROGRAM
+#==================================================================
+git clone https://github.com/input-output-hk/plutus-pioneer-program.git
+
+cd plutus 
+nix-shell
+
+cd plutus-pioneer-program/code/week01
+cabal build
+
+# In the first terminal
+# Start the plutus playground server
+cd plutus-playground-server
+plutus-playground-server
+
+#In the second terminal, start the client
+cd plutus-playground-client
+npm start
+
+# Once they are both up and running, and the build of week01 is done:
+# Go to your browser of choice to: https://localhost:8009
 
