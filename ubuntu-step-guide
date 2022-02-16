@@ -20,6 +20,14 @@ ghcup install cabal 3.6.2.0
 ghcup set ghc 8.10.7
 ghcup set cabal 3.6.2.0
 
+# Other way INSTALL HASKELL
+sudo add-apt-repository universe
+sudo add-apt-repository multiverse
+sudo apt update
+sudo apt upgrade
+sudo apt-get install haskell-platform
+cabal update
+
 # INSTALL NIX
 #==================================================================
 curl -L https://nixos.org/nix/install | sh
@@ -42,15 +50,6 @@ sudo systemctl restart nix-daemon.service
 
 nix-env --version
 
-# INSTALL HASKELL
-#==================================================================
-sudo add-apt-repository universe
-sudo add-apt-repository multiverse
-sudo apt update
-sudo apt upgrade
-sudo apt-get install haskell-platform
-cabal update
-
 # PLUTUS CORE
 #==================================================================
 #Build the Plutus Playground server and client and start it
@@ -67,22 +66,22 @@ nix-build -A plutus-playground.generate-purescript
 nix-build -A plutus-playground.start-backend
 nix-build -A plutus-pab
 
-#In terminal window 1
+# In terminal window 1
 cd plutus
 nix-shell
 cd plutus-playground-server
 plutus-playground-server
-#If it's successful, you should see Interpreter ready
+# If it's successful, you should see Interpreter ready
 
-#In terminal window 2
+# In terminal window 2
 cd plutus
 nix-shell
 cd plutus-playground-client
 npm run start
-#If it's successful, you should see [wdm]: Compiled successfully.
+# If it's successful, you should see [wdm]: Compiled successfully.
 
-#You should now be able to navigate to https://localhost:8009. 
-#The browser will complain about it being a risky website, allow it.
+# You should now be able to navigate to https://localhost:8009. 
+# The browser will complain about it being a risky website, allow it.
 
 # PLUTUS APPS
 #==================================================================
@@ -106,7 +105,7 @@ cabal build
 cd plutus/plutus-playground-server
 plutus-playground-server
 
-#In the second terminal, start the client
+# In the second terminal, start the client
 cd plutus/plutus-playground-client
 npm start
 
